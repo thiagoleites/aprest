@@ -11,21 +11,21 @@ router.post('/signup', async (req, res) => {
         const { nome, email, senha, telefones } = req.body;
         const users = readUsers();
 
-        // Verifica se o email já está em uso
+        
         if (users.some(user => user.email === email)) {
             return res.status(400).json({ mensagem: 'E-mail já cadastrado' });
         }
 
         const hashedPassword = await bcrypt.hash(senha, 10);
         const newUser = {
-            id: uuidv4(), // Utilizando uma biblioteca como uuid para gerar GUID/ID
+            id: uuidv4(), 
             nome,
             email,
             senha: hashedPassword,
             telefones,
             data_criacao: new Date(),
             data_atualizacao: new Date(),
-            ultimo_login: null, // Pode ser atualizado quando o usuário faz login
+            ultimo_login: null, 
         };
         users.push(newUser);
         saveUsers(users);
@@ -67,8 +67,7 @@ router.post('/signin', async (req, res) => {
         saveUsers(users);
 
         const token = jwt.sign({ userId: user.email }, user.senha, { expiresIn: '30m'});
-        // const token = jwt.sign({ userId: user.email }, user.senha, { expiresIn: '30m'} 'secretpassword');
-        //Atualizar o token no objeto do usuário
+        
         user.token = token;
 
         res.json({ token });
@@ -85,15 +84,11 @@ router.get('/user', (req, res) => {
         return res.status(401).json({ mensagem: 'Não autorizado' });
     }
 
-    // jwt.verify(token.replace('Bearer ', ''), 'secretpassword', (err, decoded) => {
     jwt.verify(token, 'secretpassword', (err, decoded) => {
         if (err) {
-            console.error('Erro na verificação do token:', err); //dell
             if (err.name === 'TokenExpiredError') {
-                console.log('Token expirado. Sessão inválida.'); //del
                 return res.status(401).json({ mensagem: 'Sessão inválida' });
             } else {
-                console.log('Token inválido. Não autorizado.'); //del
                 return res.status(401).json({ mensagem: 'Não autorizado' });
             }
         }
@@ -105,7 +100,7 @@ router.get('/user', (req, res) => {
             return res.status(401).json({ mensagem: 'Usuário não encontrado' });
         }
 
-        const { senha, ...userData } = user; // Excluir a senha do retorno
+        const { senha, ...userData } = user;
         res.json(userData);
     });
 });
