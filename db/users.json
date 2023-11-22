@@ -27,6 +27,21 @@
     ],
     "data_criacao": "2023-11-22T00:55:54.726Z",
     "data_atualizacao": "2023-11-22T00:55:54.726Z",
-    "ultimo_login": "2023-11-22T01:06:49.498Z"
+    "ultimo_login": "2023-11-22T01:18:31.040Z"
+  },
+  {
+    "id": "afe2bb8f-75c6-4ff8-83c9-b7137e500390",
+    "nome": "Test User",
+    "email": "test@example.com",
+    "senha": "$2b$10$ox05f3Wv5EHIPNO5WGuQ3.yX969GXKVfPz0kjKaIv1V86.O8LGekG",
+    "telefones": [
+      {
+        "numero": "123456789",
+        "ddd": "11"
+      }
+    ],
+    "data_criacao": "2023-11-22T16:11:04.842Z",
+    "data_atualizacao": "2023-11-22T16:11:04.842Z",
+    "ultimo_login": "2023-11-22T16:11:04.911Z"
   }
 ]

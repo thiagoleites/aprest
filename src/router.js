@@ -11,6 +11,9 @@ router.post('/signup', async (req, res) => {
         const { nome, email, senha, telefones } = req.body;
         const users = readUsers();
 
+        if (!nome || !email || !senha || !telefones) {
+            return res.status(400).json({ mensagem: 'Dados inválidos' });
+        }
         
         if (users.some(user => user.email === email)) {
             return res.status(400).json({ mensagem: 'E-mail já cadastrado' });
@@ -27,10 +30,11 @@ router.post('/signup', async (req, res) => {
             data_atualizacao: new Date(),
             ultimo_login: null, 
         };
+
         users.push(newUser);
         saveUsers(users);
 
-        const token = jwt.sign({ userId: newUser.id }, 'secretpassword', { expiresIn: '30m'});
+        const token = jwt.sign({ userId: newUser.id }, 'chaveUnica', { expiresIn: '30m'});
 
         res.status(201).json({
             id: newUser.id,
@@ -59,14 +63,14 @@ router.post('/signin', async (req, res) => {
         const isPasswordValid = await bcrypt.compare(senha, user.senha);
 
         if (!isPasswordValid) {
-            return res.status(401).json({ error: 'Senha incorreta' });
+            return res.status(401).json({ mensagem: 'Senha incorreta' });
         }
 
         user.ultimo_login = new Date();
 
         saveUsers(users);
 
-        const token = jwt.sign({ userId: user.email }, user.senha, { expiresIn: '30m'});
+        const token = jwt.sign({ userId: user.email }, 'chaveUnica', { expiresIn: '30m'});
         
         user.token = token;
 
@@ -84,7 +88,7 @@ router.get('/user', (req, res) => {
         return res.status(401).json({ mensagem: 'Não autorizado' });
     }
 
-    jwt.verify(token, 'secretpassword', (err, decoded) => {
+    jwt.verify(token, 'chaveUnica', (err, decoded) => {
         if (err) {
             if (err.name === 'TokenExpiredError') {
                 return res.status(401).json({ mensagem: 'Sessão inválida' });
