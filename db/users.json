@@ -1,0 +1,32 @@
+[
+  {
+    "id": "784b48a8-f921-4aa3-a464-fdef303e2e8b",
+    "nome": "Enzo Gabriel",
+    "email": "enzo@email.com",
+    "senha": "$2b$10$LDJIJ7jOAFQ3FwdwBGwbgeJISxsTKMCvzS8J/baXWAiH.pjxjebRq",
+    "telefones": [
+      {
+        "numero": "123456789",
+        "ddd": "82"
+      }
+    ],
+    "data_criacao": "2023-11-21T03:00:26.324Z",
+    "data_atualizacao": "2023-11-21T03:00:26.324Z",
+    "ultimo_login": "2023-11-22T00:34:26.074Z"
+  },
+  {
+    "id": "81b3d94d-2b80-42dc-afc2-5504b6d297f7",
+    "nome": "Teste User",
+    "email": "teste@user.com",
+    "senha": "$2b$10$YttMqybBuuNcvHuZNVfcbOqegp/gBw6Y7T8NUst2ZDAl15su2EWQO",
+    "telefones": [
+      {
+        "numero": "123456789",
+        "ddd": "82"
+      }
+    ],
+    "data_criacao": "2023-11-22T00:55:54.726Z",
+    "data_atualizacao": "2023-11-22T00:55:54.726Z",
+    "ultimo_login": "2023-11-22T01:06:49.498Z"
+  }
+]
