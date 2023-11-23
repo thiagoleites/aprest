@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -5,6 +6,8 @@ const { readUsers, saveUsers } = require('./functions');
 const { v4: uuidv4 } = require('uuid');
 
 const router = express.Router();
+
+const TOKEN_SECRET = process.env.TOKEN_SECRET;
 
 router.post('/signup', async (req, res) => {
     try {
@@ -34,8 +37,8 @@ router.post('/signup', async (req, res) => {
         users.push(newUser);
         saveUsers(users);
 
-        const token = jwt.sign({ userId: newUser.id }, 'chaveUnica', { expiresIn: '30m'});
-
+        const token = jwt.sign({ userId: newUser.id }, TOKEN_SECRET, { expiresIn: '30m'});
+        
         res.status(201).json({
             id: newUser.id,
             data_criacao: newUser.data_criacao,
@@ -57,7 +60,7 @@ router.post('/signin', async (req, res) => {
         const user = users.find(user => user.email === email);
 
         if (!user) {
-            return res.status(401).json({ error: 'Usuário não encontrado' });
+            return res.status(401).json({ mensagem: 'Usuário não encontrado' });
         }
 
         const isPasswordValid = await bcrypt.compare(senha, user.senha);
@@ -70,7 +73,7 @@ router.post('/signin', async (req, res) => {
 
         saveUsers(users);
 
-        const token = jwt.sign({ userId: user.email }, 'chaveUnica', { expiresIn: '30m'});
+        const token = jwt.sign({ userId: user.id }, TOKEN_SECRET, { expiresIn: '30m'});
         
         user.token = token;
 
@@ -81,32 +84,31 @@ router.post('/signin', async (req, res) => {
     }
 });
 
-router.get('/user', (req, res) => {
-    const token = req.headers.authorization;
+router.get('/user', async (req, res) => {
+    try {
+        const token = req.headers.authorization.split(' ')[1];
+        if (!token) {
+            return res.status(401).json({mensagem: 'Token não fornecido'});
+        }
 
-    if (!token || token === 'undefined') {
-        return res.status(401).json({ mensagem: 'Não autorizado' });
-    }
+        const decode = await jwt.verify(token, TOKEN_SECRET);
 
-    jwt.verify(token, 'chaveUnica', (err, decoded) => {
-        if (err) {
-            if (err.name === 'TokenExpiredError') {
-                return res.status(401).json({ mensagem: 'Sessão inválida' });
-            } else {
-                return res.status(401).json({ mensagem: 'Não autorizado' });
-            }
+        if(decode === undefined) {
+            return res.status(401).json({mensagem: 'Não autorizado'});
         }
 
         const users = readUsers();
-        const user = users.find(u => u.email === decoded.userId);
+        const user = users.find(user => user.id === decode.userId);
 
         if (!user) {
-            return res.status(401).json({ mensagem: 'Usuário não encontrado' });
+            return res.status(401).json({mensagem: 'Não autorizado'});
         }
 
-        const { senha, ...userData } = user;
-        res.json(userData);
-    });
+        return res.status(200).json(user);
+    } catch (error) {
+        console.log('Erro ao verficar o token: ', error);
+        res.status(401).json({mensagem: 'Não autorizado'});
+    }
 });
 
 module.exports = router;

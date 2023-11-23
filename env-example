@@ -1,2 +1,3 @@
-# Port to run the application
+# Exemplo de arquivo .env
 PORT=3333
+TOKEN_SECRET=chavesecreta
