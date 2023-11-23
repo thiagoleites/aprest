@@ -24,3 +24,9 @@ npm install
 <code> rota /signin</code>
 
 <img src="./images/signin.png" />
+
+## Info do usuário
+
+<code> rota /user</code>
+
+<img src="./images/user.png" />
